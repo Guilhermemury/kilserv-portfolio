@@ -1,0 +1,49 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import SectionHeader from '../../components/SectionHeader.astro'; // Import Added
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('research')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<MainLayout title="Research Archive">
+    <SectionHeader command="ls -la research/" path="research" />
+    
+    <div class="terminal-list">
+        <div class="header">
+            <span>PERMS</span>
+            <span>SIZE</span>
+            <span>DATE</span>
+            <span>NAME</span>
+        </div>
+        <div class="divider">==============================================================================================================</div>
+        {posts.map((post) => (
+            <div class="row">
+                <span class="perms">[-rw-r--r--]</span>
+                <span class="size">4.0K</span>
+                <span class="date">{post.data.pubDate.toISOString().split('T')[0]}</span>
+                <a href={`/research/${post.slug}`}>{post.slug}.md</a>
+            </div>
+        ))}
+        <div class="row footer">
+            <span>total {posts.length}</span>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .terminal-list { font-family: var(--font-mono); margin-top: 2rem; font-size: 0.9rem; }
+    .header, .row { display: grid; grid-template-columns: 120px 80px 120px 1fr; gap: 1rem; padding: 0.2rem 0; }
+    .header { color: var(--fg-dim); font-weight: bold; }
+    .perms, .size, .date { color: var(--fg-dim); }
+    .divider { color: var(--border); margin-bottom: 0.5rem; }
+    .footer { margin-top: 1rem; color: var(--fg-dim); }
+    
+    @media (max-width: 600px) {
+        .header, .perms, .size { display: none; }
+        .row { display: flex; flex-direction: column; border-bottom: 1px dashed var(--border); padding: 1rem 0; }
+        .date { margin-bottom: 0.5rem; }
+    }
+</style>

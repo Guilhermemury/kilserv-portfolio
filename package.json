@@ -1,0 +1,25 @@
+{
+  "name": "kilserv-portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^8.0.0",
+    "astro": "^5.0.0",
+    "resend": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "overrides": {
+    "ajv": "^8.18.0",
+    "path-to-regexp": "^6.3.0"  
+  }
+}

@@ -1,0 +1,79 @@
+---
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.slice(1); // remove the first "/"
+---
+
+<nav class="nav-container">
+    <div class="logo">[ <a href="/" style="border:none">Kilserv</a> ]</div>
+    
+    <ul class="desktop-menu">
+        <li><a href="/" class={pathname === "/" ? "active" : ""}>home</a></li>
+        <li><a href="/about" class={currentPath.startsWith("about") ? "active" : ""}>about</a></li>
+        <li><a href="/research" class={currentPath.startsWith("research") ? "active" : ""}>research</a></li>
+        <li><a href="/cves" class={currentPath.startsWith("cves") ? "active" : ""}>cves</a></li>
+        <li><a href="/certifications" class={currentPath.startsWith("certifications") ? "active" : ""}>certs</a></li>
+        <li><a href="/contact" class={currentPath.startsWith("contact") ? "active" : ""}>contact</a></li>
+    </ul>
+
+    <details class="mobile-menu">
+        <summary>$ menu</summary>
+        <ul>
+            <li>> <a href="/">home</a></li>
+            <li>> <a href="/about">about</a></li>
+            <li>> <a href="/research">research</a></li>
+            <li>> <a href="/cves">cves</a></li>
+            <li>> <a href="/certifications">certs</a></li>
+            <li>> <a href="/contact">contact</a></li>
+        </ul>
+    </details>
+</nav>
+
+<style>
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .logo {
+        font-weight: bold;
+    }
+
+    ul {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .active::before {
+        content: "> ";
+    }
+
+    .mobile-menu {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .desktop-menu { display: none; }
+        .mobile-menu { 
+            display: block; 
+            cursor: pointer;
+            position: relative;
+        }
+        .mobile-menu ul {
+            flex-direction: column;
+            position: absolute;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            right: 0;
+            top: 100%;
+            width: 200px;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+    }
+</style>

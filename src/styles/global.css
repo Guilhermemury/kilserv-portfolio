@@ -1,0 +1,96 @@
+:root {
+  --bg: #000000;
+  --fg: #FFFFFF;
+  --fg-dim: #888888;
+  --border: #333333;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --spacing: 1.5rem;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-y: scroll;
+}
+
+body {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--spacing);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--fg-dim);
+  transition: opacity 0.2s;
+}
+
+a:hover {
+  opacity: 0.7;
+  border-bottom-color: var(--fg);
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+/* Terminal Utilities */
+.cli-prompt::before {
+  content: "$ ";
+  color: var(--fg-dim);
+}
+
+.cli-output::before {
+  content: "> ";
+  color: var(--fg-dim);
+}
+
+/* ASCII Art Preservation */
+pre {
+  overflow-x: auto;
+  white-space: pre;
+  font-family: var(--font-mono);
+  margin-bottom: var(--spacing);
+}
+
+/* 1. Better Readability for Long Form Content */
+article p {
+    max-width: 65ch; /* Optimal reading width */
+    margin-bottom: 1.5em;
+}
+
+/* 2. Scroll Margin for Anchor Links */
+/* Ensures headers don't get stuck under fixed navs (if any) */
+h1, h2, h3 {
+    scroll-margin-top: 2rem;
+}
+
+/* 3. Focus States for Accessibility */
+a:focus {
+    outline: 2px solid var(--fg);
+    outline-offset: 2px;
+    background-color: var(--fg);
+    color: var(--bg);
+}
+
+/* 4. Selection Style */
+::selection {
+    background: var(--fg);
+    color: var(--bg);
+}

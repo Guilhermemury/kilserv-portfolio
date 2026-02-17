@@ -1,0 +1,129 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+
+interface CVE {
+    id: string;
+    product: string;
+    type: string;
+    cwe: string;
+    cvss: number;
+    severity: "Critical" | "High" | "Medium" | "Low";
+    status: string;
+    date: string;
+}
+
+const cves: CVE[] = [
+    {
+        id: "CVE-2025-67877",
+        product: "ChurchCRM",
+        type: "SQL Injection (SQLi)",
+        cwe: "CWE-89",
+        cvss: 7.4,
+        severity: "High",
+        status: "Patched",
+        date: "2025-01-15"
+    }
+];
+
+const getSeverityClass = (severity: string) => {
+    switch(severity) {
+        case 'Critical': return 'cvss-critical';
+        case 'High': return 'cvss-high';
+        case 'Medium': return 'cvss-medium';
+        default: return 'cvss-low';
+    }
+};
+---
+
+<MainLayout title="CVE Database">
+    <SectionHeader command="cat cve_database.json | jq" path="cves" />
+    
+    <div class="db-container">
+        <div class="db-header">
+            <span>ID / NVD REF</span>
+            <span>VULNERABILITY / CWE</span>
+            <span>SEVERITY / CVSS</span>
+            <span>STATUS</span>
+        </div>
+        
+        <div class="divider">==============================================================================================================</div>
+
+        {cves.map(cve => (
+            <div class="db-row">
+                <div class="col-main">
+                    <div class="id-wrapper">
+                        <span class="cve-id">{cve.id}</span>
+                        <a href={`https://nvd.nist.gov/vuln/detail/${cve.id}`} target="_blank" rel="noopener noreferrer" class="nvd-link">[NVD]</a>
+                    </div>
+                    <span class="product">> {cve.product}</span>
+                </div>
+
+                <div class="col-type">
+                    <span class="vuln-type">{cve.type}</span>
+                    <span class="cwe-id">[{cve.cwe}]</span>
+                </div>
+
+                <div class="col-score">
+                    <div class={`badge ${getSeverityClass(cve.severity)}`}>
+                        {cve.severity.toUpperCase()}
+                    </div>
+                    <span class="cvss-score">CVSS: {cve.cvss}</span>
+                </div>
+
+                <div class="col-status">
+                    <span class="status-tag">[{cve.status}]</span>
+                    <span class="date">{cve.date}</span>
+                </div>
+            </div>
+        ))}
+        
+        <div class="db-footer">
+            <span>entries returned: {cves.length}</span>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .db-container { font-size: 0.9rem; margin-top: 1rem; }
+    .db-header, .db-row { display: grid; grid-template-columns: 1.5fr 2fr 1fr 0.8fr; gap: 1rem; padding: 1rem 0; align-items: start; }
+    .db-header { color: var(--fg-dim); font-weight: bold; font-size: 0.8rem; letter-spacing: 0.05em; }
+    .divider { color: var(--border); overflow: hidden; white-space: nowrap; margin-bottom: 0.5rem; }
+    .db-row { border-bottom: 1px dashed var(--border); transition: background-color 0.1s; }
+    .db-row:hover { background-color: rgba(255, 255, 255, 0.03); }
+    
+    .col-main, .col-type, .col-score, .col-status { display: flex; flex-direction: column; gap: 0.3rem; }
+    
+    /* ID & NVD Link Styling */
+    .id-wrapper { display: flex; align-items: baseline; gap: 0.8rem; }
+    .cve-id { font-weight: 700; color: var(--fg); font-size: 1rem; }
+    .nvd-link { 
+        font-size: 0.75rem; 
+        color: var(--fg-dim); 
+        text-decoration: none; 
+        border-bottom: 1px dotted var(--fg-dim);
+        transition: color 0.2s, border-color 0.2s;
+    }
+    .nvd-link:hover { color: var(--fg); border-color: var(--fg); }
+
+    .product { color: var(--fg-dim); font-size: 0.85rem; }
+    .vuln-type { color: var(--fg); }
+    .cwe-id { color: var(--fg-dim); font-size: 0.8rem; font-family: monospace; }
+    .cvss-score { font-size: 0.8rem; font-weight: bold; color: var(--fg-dim); }
+    .status-tag { color: var(--fg); font-family: monospace; }
+    .date { color: var(--fg-dim); font-size: 0.8rem; }
+    .db-footer { margin-top: 2rem; color: var(--fg-dim); text-align: right; }
+    
+    .badge { display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: bold; border: 1px solid; text-align: center; width: fit-content; }
+    .cvss-critical { color: #FF0055; border-color: #FF0055; }
+    .cvss-high { color: #FF5500; border-color: #FF5500; }
+    .cvss-medium { color: #FFCC00; border-color: #FFCC00; }
+    .cvss-low { color: #00FF55; border-color: #00FF55; }
+    
+    @media (max-width: 768px) {
+        .db-header { display: none; }
+        .divider { display: none; }
+        .db-row { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+        .col-score { flex-direction: row; align-items: center; gap: 1rem; }
+    }
+</style>

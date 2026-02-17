@@ -1,0 +1,71 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro'; // Import Added
+---
+
+<MainLayout title="Home">
+    <section class="hero">
+        <pre aria-label="KILSERV ASCII Art">
+ _  __ ___  _       ____   _____  ____  __     __
+| |/ /|_ _|| |     / ___| | ____||  _ \ \ \   / /
+| ' /  | | | |     \___ \ |  _|  | |_) | \ \ / / 
+| . \  | | | |___   ___) || |___ |  _ &lt;   \ V /  
+|_|\_\|___||_____| |____/ |_____||_| \_\   \_/   
+        </pre>
+        
+        <div class="intro-block">
+            <p>> <strong>KILSERV</strong> is an independent security research entity.</p>
+            <p>> Focused on high-severity vulnerability disclosure and offensive security engineering.</p>
+        </div>
+    </section>
+
+    <SectionHeader command="grep 'HIGH' advisories.log" path="~" />
+
+    <section class="highlight-section">
+        <div class="cve-card">
+            <div class="cve-meta">
+                <span class="tag high">HIGH SEVERITY</span>
+                <span class="date">2025-01-15</span>
+            </div>
+            <h3><a href="/research/churchcrm-sqli-cve-2025-67877">CVE-2025-67877: Unauthenticated SQL Injection in ChurchCRM</a></h3>
+            <p>Discovered via manual code review. Resulted in full database compromise.</p>
+        </div>
+    </section>
+
+    <SectionHeader command="index --map" path="~" />
+
+    <section class="quick-links">
+        <ul>
+            <li><a href="/about">[ ABOUT ]</a> :: Professional profile & methodology.</li>
+            <li><a href="/research">[ RESEARCH ]</a> :: Technical write-ups and PoCs.</li>
+            <li><a href="/certifications">[ CERTS ]</a> :: Verified qualifications.</li>
+        </ul>
+    </section>
+
+</MainLayout>
+
+<style>
+    .intro-block {
+        border-left: 2px solid var(--fg);
+        padding-left: 1rem;
+        margin: 2rem 0 4rem 0;
+        color: var(--fg-dim);
+    }
+    .intro-block strong { color: var(--fg); }
+
+    .highlight-section { margin-bottom: 4rem; }
+    
+    .cve-card {
+        border: 1px solid var(--border);
+        padding: 1.5rem;
+        transition: border-color 0.2s;
+    }
+    .cve-card:hover { border-color: var(--fg); }
+    .cve-card h3 { margin: 0.5rem 0; font-size: 1.1rem; }
+    .tag.high { background: var(--fg); color: var(--bg); padding: 0.1rem 0.4rem; font-size: 0.7rem; font-weight: bold; margin-right: 1rem;}
+    .date { font-size: 0.8rem; color: var(--fg-dim); }
+
+    .quick-links ul { list-style: none; margin-top: 1rem; }
+    .quick-links li { margin-bottom: 1rem; color: var(--fg-dim); }
+    .quick-links a { color: var(--fg); font-weight: bold; margin-right: 1rem; }
+</style>

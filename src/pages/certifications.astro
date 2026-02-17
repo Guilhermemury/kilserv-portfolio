@@ -1,0 +1,101 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+
+const certifications = [
+    {
+        name: "DESEC Certified Penetration Tester (DCPT)",
+        org: "DESEC",
+        id: "VIXA-AIXVC-LBTK",
+        year: "2026",
+        note: "Penetration Testing with Kali Linux"
+    },
+    {
+        name: "Certified AppSec Pentester (CAPen)",
+        org: "TheSecOpsGroup",
+        id: "10818602",
+        year: "2025",
+        note: "Advanced Web App Attacks"
+    },
+    {
+        name: "eLearnSecurity Junior Penetration Tester",
+        org: "INE Security",
+        id: "165909031",
+        year: "2025",
+        note: "Web/Network Security Logic"
+    },
+    {
+        name: "Certified Red Team Analyst",
+        org: "Cyberwarfare",
+        id: "CRTA-68b632b83bd10918d103db19",
+        year: "2025",
+        note: "Network, Infrastructure and Active Directory Penetration Testing"
+    }
+];
+---
+
+<MainLayout title="Certifications">
+    <SectionHeader command="ls -l certifications/" path="certs" />
+
+    <div class="cert-table">
+        <div class="cert-header">
+            <span class="col-year">YEAR</span>
+            <span class="col-org">ORG</span>
+            <span class="col-name">CERTIFICATION</span>
+            <span class="col-id">VERIFICATION</span>
+        </div>
+        
+        <div class="divider">==============================================================================================================</div>
+
+        {certifications.map(cert => (
+            <div class="cert-row">
+                <span class="col-year">[{cert.year}]</span>
+                <span class="col-org">{cert.org}</span>
+                <div class="col-name-group">
+                    <span class="cert-name">{cert.name}</span>
+                    <span class="cert-note">// {cert.note}</span>
+                </div>
+                <span class="col-id">{cert.id}</span>
+            </div>
+        ))}
+        
+        <div class="cert-footer">
+            <span>total {certifications.length}</span>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .cert-table {
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+    .cert-header, .cert-row {
+        display: grid;
+        grid-template-columns: 80px 150px 1fr 150px;
+        gap: 1.5rem;
+        padding: 0.5rem 0;
+        align-items: baseline;
+    }
+    .cert-header { color: var(--fg-dim); font-weight: bold; }
+    .divider { color: var(--border); overflow: hidden; white-space: nowrap; margin-bottom: 0.5rem; }
+    
+    .cert-name { display: block; font-weight: 700; color: var(--fg); }
+    .cert-note { display: block; font-size: 0.8rem; color: var(--fg-dim); margin-top: 0.2rem; }
+    .col-id { font-family: monospace; color: var(--fg-dim); text-align: right; }
+    
+    .cert-footer { margin-top: 2rem; color: var(--fg-dim); }
+
+    @media (max-width: 768px) {
+        .cert-header { display: none; }
+        .divider { display: none; }
+        .cert-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            border-bottom: 1px dashed var(--border);
+            padding: 1.5rem 0;
+        }
+        .col-id { text-align: left; }
+    }
+</style>

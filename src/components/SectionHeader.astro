@@ -1,0 +1,33 @@
+---
+interface Props {
+  command: string;
+  path?: string;
+}
+const { command, path = "~" } = Astro.props;
+---
+
+<div class="cli-header">
+  <span class="prompt">kilserv@{path} $</span>
+  <h2 class="command">{command}</h2>
+</div>
+
+<style>
+  .cli-header {
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-mono);
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 0.5rem;
+  }
+  .prompt {
+    color: var(--fg-dim);
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+  }
+  .command {
+    display: inline;
+    font-size: 1.2rem;
+    color: var(--fg);
+    font-weight: 700;
+  }
+</style>

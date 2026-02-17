@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Production Build
+dist/
+
+# Astro Cache
+.astro/
+
+# Environment Variables (CRITICAL SECURITY)
+.env
+.env.production
+.env.local
+.env.*
+!.env.example
+
+# OS Junk
+.DS_Store
+Thumbs.db
+
+# Editor Configs
+.vscode/
+.idea/
+
+# Vercel
+.vercel/
+node_modules
