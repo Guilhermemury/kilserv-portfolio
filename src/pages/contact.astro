@@ -62,9 +62,12 @@ mQINBF... (PLACEHOLDER) ...
             const formData = new FormData(form);
 
             try {
-                const response = await fetch('/api/send', {
+                const response = await fetch(window.location.origin + '/api/send', { // Add window.location.origin
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
                 });
 
                 if (response.ok) {

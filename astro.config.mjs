@@ -3,9 +3,8 @@ import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   site: 'https://kilserv.vercel.app/',
-  output: 'server', // CHANGE THIS to 'server' to force dynamic behavior globally for now
+  output: 'static', // Back to static
   adapter: vercel({
-    maxDuration: 10,
+    webAnalytics: { enabled: true },
   }),
-  compressHTML: true
 });
