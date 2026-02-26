@@ -7,13 +7,36 @@ interface CVE {
     product: string;
     type: string;
     cwe: string;
-    cvss: number;
+    cvss: number | string;
     severity: "Critical" | "High" | "Medium" | "Low";
     status: string;
     date: string;
+    redacted?: boolean;
 }
 
 const cves: CVE[] = [
+    {
+        id: "CVE-2026-XXXX",
+        product: "[REDACTED_TARGET_ALPHA]",
+        type: "SQL Injection & LDAP Injection",
+        cwe: "CWE-89",
+        cvss: "8.X",
+        severity: "High",
+        status: "Pending Disclosure",
+        date: "2026-??-??",
+        redacted: true
+    },
+    {
+        id: "CVE-2026-XXXX",
+        product: "[REDACTED_TARGET_BETA]",
+        type: "Blind SQL Injection",
+        cwe: "CWE-89",
+        cvss: "8.X",
+        severity: "High",
+        status: "Pending Disclosure",
+        date: "2026-??-??",
+        redacted: true
+    },
     {
         id: "CVE-2025-67877",
         product: "ChurchCRM",
@@ -40,23 +63,23 @@ const getSeverityClass = (severity: string) => {
     <SectionHeader command="cat cve_database.json | jq" path="cves" />
     
     <div class="db-container">
-        <div class="db-header">
+        <div class="db-header terminal-line">
             <span>ID / NVD REF</span>
             <span>VULNERABILITY / CWE</span>
             <span>SEVERITY / CVSS</span>
             <span>STATUS</span>
         </div>
         
-        <div class="divider">==============================================================================================================</div>
+        <div class="divider terminal-line">==============================================================================================================</div>
 
-        {cves.map(cve => (
-            <div class="db-row">
+        {cves.map((cve, index) => (
+            <div class="db-row terminal-line" style={`animation-delay: ${index * 0.15}s`}>
                 <div class="col-main">
                     <div class="id-wrapper">
                         <span class="cve-id">{cve.id}</span>
-                        <a href={`https://nvd.nist.gov/vuln/detail/${cve.id}`} target="_blank" rel="noopener noreferrer" class="nvd-link">[NVD]</a>
+                        {!cve.redacted && <a href={`https://nvd.nist.gov/vuln/detail/${cve.id}`} target="_blank" rel="noopener noreferrer" class="nvd-link">[NVD]</a>}
                     </div>
-                    <span class="product">> {cve.product}</span>
+                    <span class={`product ${cve.redacted ? 'redacted-text' : ''}`}>> {cve.product}</span>
                 </div>
 
                 <div class="col-type">
@@ -72,14 +95,14 @@ const getSeverityClass = (severity: string) => {
                 </div>
 
                 <div class="col-status">
-                    <span class="status-tag">[{cve.status}]</span>
+                    <span class={`status-tag ${cve.redacted ? 'blink-slow' : ''}`}>[{cve.status}]</span>
                     <span class="date">{cve.date}</span>
                 </div>
             </div>
         ))}
         
-        <div class="db-footer">
-            <span>entries returned: {cves.length}</span>
+        <div class="db-footer terminal-line" style={`animation-delay: ${cves.length * 0.15 + 0.2}s`}>
+            <span class="cursor">entries returned: {cves.length}</span>
         </div>
     </div>
 </MainLayout>
@@ -119,6 +142,45 @@ const getSeverityClass = (severity: string) => {
     .cvss-high { color: #FF5500; border-color: #FF5500; }
     .cvss-medium { color: #FFCC00; border-color: #FFCC00; }
     .cvss-low { color: #00FF55; border-color: #00FF55; }
+
+    /* --- ANIMATION STYLES --- */
+    .terminal-line {
+        opacity: 0;
+        animation: renderLine 0.15s forwards;
+    }
+    @keyframes renderLine {
+        from { opacity: 0; transform: translateY(2px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .redacted-text {
+        background-color: var(--fg-dim);
+        color: var(--fg-dim); 
+        user-select: none; 
+        filter: blur(3px);
+        transition: filter 0.3s;
+    }
+    .redacted-text:hover {
+        filter: blur(1.5px); 
+    }
+
+    .cursor::after {
+        content: '█';
+        margin-left: 5px;
+        animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+    
+    .blink-slow {
+        animation: pulseText 2s infinite;
+    }
+    @keyframes pulseText {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
     
     @media (max-width: 768px) {
         .db-header { display: none; }
