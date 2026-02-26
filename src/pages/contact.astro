@@ -7,15 +7,17 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL;
 ---
 
 <MainLayout title="Contact">
-    <SectionHeader command="./contact.sh --secure" path="contact" />
+    <div class="terminal-line delay-1">
+        <SectionHeader command="./contact.sh --secure" path="contact" />
+    </div>
 
-    <div class="contact-block">
+    <div class="contact-block terminal-line delay-2">
         <p>> Initiating encrypted channel...</p>
     </div>
 
-    <div class="divider">--- SECURE MESSAGE TRANSMISSION ---</div>
+    <div class="divider terminal-line delay-3">--- SECURE MESSAGE TRANSMISSION ---</div>
 
-    <form class="cli-form" id="contact-form">
+    <form class="cli-form terminal-line delay-4" id="contact-form">
         <div class="input-group">
             <label for="email">sender_email:</label>
             <input type="email" id="email" name="email" placeholder="user@target.com" required class="cli-input" />
@@ -26,7 +28,7 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL;
             <textarea id="message" name="message" rows="5" placeholder="Enter message data..." required class="cli-input"></textarea>
         </div>
 
-        <button type="submit" class="cli-btn" id="submit-btn">
+        <button type="submit" class="cli-btn cursor" id="submit-btn">
             [ EXECUTE TRANSMISSION ]
         </button>
 
@@ -35,8 +37,11 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL;
 
     <br /><br />
 
-    <SectionHeader command="cat public_key.asc" path="contact" />
-    <pre class="pgp-block">
+    <div class="terminal-line delay-5">
+        <SectionHeader command="cat public_key.asc" path="contact" />
+    </div>
+    
+    <pre class="pgp-block terminal-line delay-6">
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 mQINBF... (PLACEHOLDER) ...
 =KilS
@@ -62,7 +67,7 @@ mQINBF... (PLACEHOLDER) ...
             const formData = new FormData(form);
 
             try {
-                const response = await fetch(window.location.origin + '/api/send', { // Add window.location.origin
+                const response = await fetch(window.location.origin + '/api/send', {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -95,68 +100,20 @@ mQINBF... (PLACEHOLDER) ...
     .divider { color: var(--border); font-size: 0.8rem; margin: 2rem 0; text-align: center; }
 
     /* Form Styles */
-    .cli-form {
-        border: 1px dashed var(--border);
-        padding: 2rem;
-        background: rgba(255,255,255,0.02);
-    }
+    .cli-form { border: 1px dashed var(--border); padding: 2rem; background: rgba(255,255,255,0.02); }
 
-    .input-group {
-        margin-bottom: 1.5rem;
-        display: flex;
-        flex-direction: column;
-    }
+    .input-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; }
 
-    label {
-        color: var(--fg-dim);
-        font-family: var(--font-mono);
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
+    label { color: var(--fg-dim); font-family: var(--font-mono); margin-bottom: 0.5rem; font-size: 0.9rem; }
 
-    .cli-input {
-        background: #000;
-        border: 1px solid #333;
-        color: var(--fg);
-        font-family: var(--font-mono);
-        padding: 0.8rem;
-        font-size: 1rem;
-        width: 100%;
-        outline: none;
-    }
+    .cli-input { background: #000; border: 1px solid #333; color: var(--fg); font-family: var(--font-mono); padding: 0.8rem; font-size: 1rem; width: 100%; outline: none; }
+    .cli-input:focus { border-color: var(--fg); }
 
-    .cli-input:focus {
-        border-color: var(--fg);
-    }
+    .cli-btn { background: transparent; border: 1px solid var(--fg); color: var(--fg); font-family: var(--font-mono); padding: 1rem 2rem; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.2s; text-align: center; }
+    .cli-btn:hover:not(:disabled) { background: var(--fg); color: var(--bg); }
+    .cli-btn:disabled { opacity: 0.5; cursor: not-allowed; border-style: dashed; }
 
-    .cli-btn {
-        background: transparent;
-        border: 1px solid var(--fg);
-        color: var(--fg);
-        font-family: var(--font-mono);
-        padding: 1rem 2rem;
-        cursor: pointer;
-        font-weight: bold;
-        width: 100%;
-        transition: all 0.2s;
-    }
-
-    .cli-btn:hover:not(:disabled) {
-        background: var(--fg);
-        color: var(--bg);
-    }
-
-    .cli-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        border-style: dashed;
-    }
-
-    .status-output {
-        margin-top: 1.5rem;
-        font-family: var(--font-mono);
-        min-height: 1.5rem;
-    }
+    .status-output { margin-top: 1.5rem; font-family: var(--font-mono); min-height: 1.5rem; }
 
     .pgp-block { font-size: 0.7rem; color: var(--fg-dim); border: 1px dashed var(--border); padding: 1rem; margin-top: 1rem; }
 </style>

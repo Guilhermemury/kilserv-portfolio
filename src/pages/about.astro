@@ -4,9 +4,11 @@ import SectionHeader from '../components/SectionHeader.astro';
 ---
 
 <MainLayout title="About Profile">
-    <SectionHeader command="cat profile.txt" path="about" />
+    <div class="terminal-line delay-1">
+        <SectionHeader command="cat profile.txt" path="about" />
+    </div>
     
-    <article class="terminal-block">
+    <article class="terminal-block terminal-line delay-2">
         <p>
             Security Researcher and Ethical Hacker specializing in <strong>Web Application Security</strong> and <strong>Infrastructure Analysis</strong>.
         </p>
@@ -18,30 +20,34 @@ import SectionHeader from '../components/SectionHeader.astro';
         </p>
     </article>
 
-    <SectionHeader command="cat methodology.md" path="about" />
+    <div class="terminal-line delay-3">
+        <SectionHeader command="cat methodology.md" path="about" />
+    </div>
 
     <div class="grid-layout">
-        <div class="method-card">
+        <div class="method-card terminal-line delay-4">
             <h3>01 // RECONNAISSANCE</h3>
             <p>Passive OSINT & Active Mapping. Understanding the attack surface before sending a single payload.</p>
         </div>
-        <div class="method-card">
+        <div class="method-card terminal-line delay-4">
             <h3>02 // ANALYSIS</h3>
             <p>Source code review (Whitebox) and reverse engineering of client-side logic.</p>
         </div>
-        <div class="method-card">
+        <div class="method-card terminal-line delay-5">
             <h3>03 // EXPLOITATION</h3>
             <p>Developing custom proof-of-concept (PoC) chains. No blind firing of pre-made exploits.</p>
         </div>
-        <div class="method-card">
+        <div class="method-card terminal-line delay-5">
             <h3>04 // REPORTING</h3>
             <p>Delivering actionable intelligence. Assessing business impact, not just CVSS scores.</p>
         </div>
     </div>
 
-    <SectionHeader command="./list_skills.sh --verbose" path="about" />
+    <div class="terminal-line delay-6">
+        <SectionHeader command="./list_skills.sh --verbose" path="about" />
+    </div>
 
-    <ul class="skill-tree">
+    <ul class="skill-tree terminal-line delay-6">
         <li><span class="category">LANGUAGES ::</span> Python, Go, TypeScript, PHP, Bash</li>
         <li><span class="category">TESTING   ::</span> Burp Suite Pro, Caido, Custom Scripts</li>
         <li><span class="category">TARGETS   ::</span> API (REST/GraphQL), Cloud (AWS), Legacy Ent. Apps</li>
@@ -50,38 +56,14 @@ import SectionHeader from '../components/SectionHeader.astro';
 </MainLayout>
 
 <style>
-    .terminal-block {
-        max-width: 65ch;
-        border-left: 2px solid var(--border);
-        padding-left: 1.5rem;
-        margin-bottom: 2rem;
-    }
+    .terminal-block { max-width: 65ch; border-left: 2px solid var(--border); padding-left: 1.5rem; margin-bottom: 2rem; }
     
-    .grid-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        margin-bottom: 2rem;
-    }
+    .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+    .method-card h3 { font-size: 0.9rem; color: var(--fg-dim); margin-bottom: 0.5rem; }
 
-    .method-card h3 {
-        font-size: 0.9rem;
-        color: var(--fg-dim);
-        margin-bottom: 0.5rem;
-    }
-
-    .skill-tree {
-        list-style: none;
-        font-family: var(--font-mono);
-    }
-    .skill-tree li {
-        margin-bottom: 0.8rem;
-    }
-    .category {
-        color: var(--fg-dim);
-        font-weight: bold;
-        margin-right: 1rem;
-    }
+    .skill-tree { list-style: none; font-family: var(--font-mono); }
+    .skill-tree li { margin-bottom: 0.8rem; }
+    .category { color: var(--fg-dim); font-weight: bold; margin-right: 1rem; }
 
     @media (max-width: 700px) {
         .grid-layout { grid-template-columns: 1fr; }

@@ -35,20 +35,22 @@ const certifications = [
 ---
 
 <MainLayout title="Certifications">
-    <SectionHeader command="ls -l certifications/" path="certs" />
+    <div class="terminal-line delay-1">
+        <SectionHeader command="ls -l certifications/" path="certs" />
+    </div>
 
     <div class="cert-table">
-        <div class="cert-header">
+        <div class="cert-header terminal-line delay-2">
             <span class="col-year">YEAR</span>
             <span class="col-org">ORG</span>
             <span class="col-name">CERTIFICATION</span>
             <span class="col-id">VERIFICATION</span>
         </div>
         
-        <div class="divider">==============================================================================================================</div>
+        <div class="divider terminal-line delay-2">==============================================================================================================</div>
 
-        {certifications.map(cert => (
-            <div class="cert-row">
+        {certifications.map((cert, index) => (
+            <div class="cert-row terminal-line" style={`animation-delay: ${0.3 + (index * 0.15)}s`}>
                 <span class="col-year">[{cert.year}]</span>
                 <span class="col-org">{cert.org}</span>
                 <div class="col-name-group">
@@ -59,24 +61,15 @@ const certifications = [
             </div>
         ))}
         
-        <div class="cert-footer">
-            <span>total {certifications.length}</span>
+        <div class="cert-footer terminal-line" style={`animation-delay: ${0.3 + (certifications.length * 0.15)}s`}>
+            <span class="cursor">total {certifications.length}</span>
         </div>
     </div>
 </MainLayout>
 
 <style>
-    .cert-table {
-        font-size: 0.9rem;
-        margin-top: 1rem;
-    }
-    .cert-header, .cert-row {
-        display: grid;
-        grid-template-columns: 80px 150px 1fr 150px;
-        gap: 1.5rem;
-        padding: 0.5rem 0;
-        align-items: baseline;
-    }
+    .cert-table { font-size: 0.9rem; margin-top: 1rem; }
+    .cert-header, .cert-row { display: grid; grid-template-columns: 80px 150px 1fr 150px; gap: 1.5rem; padding: 0.5rem 0; align-items: baseline; }
     .cert-header { color: var(--fg-dim); font-weight: bold; }
     .divider { color: var(--border); overflow: hidden; white-space: nowrap; margin-bottom: 0.5rem; }
     
@@ -89,13 +82,7 @@ const certifications = [
     @media (max-width: 768px) {
         .cert-header { display: none; }
         .divider { display: none; }
-        .cert-row {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-            border-bottom: 1px dashed var(--border);
-            padding: 1.5rem 0;
-        }
+        .cert-row { display: flex; flex-direction: column; gap: 0.2rem; border-bottom: 1px dashed var(--border); padding: 1.5rem 0; }
         .col-id { text-align: left; }
     }
 </style>
