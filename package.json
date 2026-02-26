@@ -10,8 +10,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/vercel": "^8.0.0",
-    "astro": "^5.0.0",
+    "@astrojs/vercel": "^9.0.4",
+    "astro": "^5.18.0",
     "resend": "^4.0.0"
   },
   "devDependencies": {
@@ -20,6 +20,7 @@
   },
   "overrides": {
     "ajv": "^8.18.0",
-    "path-to-regexp": "^6.3.0"  
+    "path-to-regexp": "^6.3.0",
+    "glob": "^11.0.0"
   }
 }

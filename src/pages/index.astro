@@ -5,7 +5,7 @@ import SectionHeader from '../components/SectionHeader.astro';
 
 <MainLayout title="Home">
     <section class="hero">
-        <pre aria-label="KILSERV ASCII Art" class="terminal-line delay-1">
+        <pre aria-label="KILSERV ASCII Art" class="terminal-line delay-1 ascii-flicker">
  _  __ ___  _        ____   _____  ____  __     __
 | |/ /|_ _|| |      / ___| | ____||  _ \ \ \   / /
 | ' /  | | | |      \___ \ |  _|  | |_) | \ \ / / 
@@ -14,8 +14,8 @@ import SectionHeader from '../components/SectionHeader.astro';
         </pre>
         
         <div class="intro-block terminal-line delay-2">
-            <p>> <strong>Guilherme (Kilserv)</strong> is a Security Researcher & Red Team Operator.</p>
-            <p>> Specializing in offensive engineering, manual code review, and high-impact vulnerability disclosure.</p>
+            <p>> <strong id="type-target-1"></strong><span id="cursor-1" class="typing-cursor">█</span></p>
+            <p id="line-2-container" style="opacity: 0;">> <span id="type-target-2"></span><span id="cursor-2" class="typing-cursor" style="display: none;">█</span></p>
         </div>
     </section>
 
@@ -26,7 +26,7 @@ import SectionHeader from '../components/SectionHeader.astro';
     <section class="highlight-section terminal-line delay-4">
         <div class="cve-card">
             <div class="cve-meta">
-                <span class="tag high">HIGH SEVERITY</span>
+                <span class="tag high blink-slow">HIGH SEVERITY</span>
                 <span class="date">2025-01-15</span>
             </div>
             <h3><a href="/research/churchcrm-sqli-cve-2025-67877">CVE-2025-67877: Unauthenticated SQL Injection in ChurchCRM</a></h3>
@@ -40,13 +40,92 @@ import SectionHeader from '../components/SectionHeader.astro';
 
     <section class="quick-links terminal-line delay-6">
         <ul>
-            <li><a href="/about">[ ABOUT ]</a> :: Professional profile & methodology.</li>
-            <li><a href="/research">[ RESEARCH ]</a> :: Technical write-ups and PoCs.</li>
-            <li><a href="/certifications">[ CERTS ]</a> :: Verified qualifications.</li>
+            <li><a href="/about" class="cyber-link" data-value="[ ABOUT ]">[ ABOUT ]</a> :: Professional profile & methodology.</li>
+            <li><a href="/research" class="cyber-link" data-value="[ RESEARCH ]">[ RESEARCH ]</a> :: Technical write-ups and PoCs.</li>
+            <li><a href="/certifications" class="cyber-link" data-value="[ CERTS ]">[ CERTS ]</a> :: Verified qualifications.</li>
         </ul>
     </section>
 
 </MainLayout>
+
+<script>
+    // Astro ViewTransitions requires code to run on 'astro:page-load' so it works when navigating back/forth
+    document.addEventListener('astro:page-load', () => {
+        
+        /* --- EFFECT 1: CRYPTOGRAPHIC SCRAMBLE HOVER --- */
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+        const links = document.querySelectorAll('.cyber-link');
+        
+        links.forEach(link => {
+            link.addEventListener('mouseover', (event) => {
+                let iterations = 0;
+                const target = event.target as HTMLElement;
+                const originalText = target.dataset.value || "";
+                
+                clearInterval(Number(target.dataset.intervalId));
+                
+                target.dataset.intervalId = String(setInterval(() => {
+                    target.innerText = originalText
+                        .split("")
+                        .map((letter, index) => {
+                            if(index < iterations) return originalText[index];
+                            return letters[Math.floor(Math.random() * letters.length)];
+                        })
+                        .join("");
+                    
+                    if(iterations >= originalText.length) {
+                        clearInterval(Number(target.dataset.intervalId));
+                    }
+                    iterations += 1 / 3; // Controls speed of decryption
+                }, 30));
+            });
+        });
+
+        /* --- EFFECT 2: TYPEWRITER INTRO --- */
+        const text1 = "Guilherme (Kilserv) is a Security Researcher & Red Team Operator.";
+        const text2 = "Specializing in offensive engineering, manual code review, and high-impact vulnerability disclosure.";
+        
+        const target1 = document.getElementById('type-target-1');
+        const target2 = document.getElementById('type-target-2');
+        const cursor1 = document.getElementById('cursor-1');
+        const cursor2 = document.getElementById('cursor-2');
+        const line2Container = document.getElementById('line-2-container');
+
+        // Only run if elements exist (prevents errors on other pages)
+        if (target1 && target2) {
+            target1.innerText = '';
+            target2.innerText = '';
+            
+            let i = 0;
+            let j = 0;
+            const speed = 25; // ms per character
+            
+            function typeLine1() {
+                if (i < text1.length) {
+                    target1!.innerHTML += text1.charAt(i);
+                    i++;
+                    setTimeout(typeLine1, speed);
+                } else {
+                    cursor1!.style.display = 'none';
+                    line2Container!.style.opacity = '1';
+                    cursor2!.style.display = 'inline-block';
+                    setTimeout(typeLine2, 200); // short pause before next line
+                }
+            }
+            
+            function typeLine2() {
+                if (j < text2.length) {
+                    target2!.innerHTML += text2.charAt(j);
+                    j++;
+                    setTimeout(typeLine2, speed);
+                }
+            }
+            
+            // Start typing after the initial CSS fade-in delay (approx 400ms)
+            setTimeout(typeLine1, 400); 
+        }
+    });
+</script>
 
 <style>
     .intro-block {
@@ -54,22 +133,65 @@ import SectionHeader from '../components/SectionHeader.astro';
         padding-left: 1rem;
         margin: 2rem 0 4rem 0;
         color: var(--fg-dim);
+        min-height: 4rem; /* Prevents layout jump while typing */
     }
     .intro-block strong { color: var(--fg); }
+    
+    .typing-cursor {
+        display: inline-block;
+        color: var(--accent);
+        animation: blink 1s step-end infinite;
+        margin-left: 2px;
+    }
+
+    /* Subtle CRT Flicker for ASCII */
+    .ascii-flicker {
+        animation: flicker 4s infinite alternate;
+    }
+    @keyframes flicker {
+        0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; }
+        20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.7; }
+    }
 
     .highlight-section { margin-bottom: 4rem; }
     
     .cve-card {
         border: 1px solid var(--border);
         padding: 1.5rem;
-        transition: border-color 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        background: rgba(255, 255, 255, 0.01);
     }
-    .cve-card:hover { border-color: var(--fg); }
+    .cve-card:hover { 
+        border-color: var(--fg); 
+        box-shadow: -4px 4px 0px rgba(255, 255, 255, 0.1); /* Adds a retro drop-shadow on hover */
+    }
     .cve-card h3 { margin: 0.5rem 0; font-size: 1.1rem; }
-    .tag.high { background: var(--fg); color: var(--bg); padding: 0.1rem 0.4rem; font-size: 0.7rem; font-weight: bold; margin-right: 1rem;}
+    
+    .tag.high { 
+        background: var(--fg); 
+        color: var(--bg); 
+        padding: 0.1rem 0.4rem; 
+        font-size: 0.7rem; 
+        font-weight: bold; 
+        margin-right: 1rem;
+    }
+    .blink-slow { animation: pulseBg 2s infinite; }
+    @keyframes pulseBg {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+    
     .date { font-size: 0.8rem; color: var(--fg-dim); }
 
     .quick-links ul { list-style: none; margin-top: 1rem; }
-    .quick-links li { margin-bottom: 1rem; color: var(--fg-dim); }
-    .quick-links a { color: var(--fg); font-weight: bold; margin-right: 1rem; }
+    .quick-links li { margin-bottom: 1rem; color: var(--fg-dim); display: flex; align-items: center; }
+    
+    .cyber-link { 
+        color: var(--fg); 
+        font-weight: bold; 
+        margin-right: 1rem; 
+        font-family: monospace;
+        display: inline-block;
+        min-width: 90px; /* Keeps layout stable during scramble */
+    }
 </style>
