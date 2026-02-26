@@ -68,21 +68,60 @@ const certifications = [
 </MainLayout>
 
 <style>
-    .cert-table { font-size: 0.9rem; margin-top: 1rem; }
-    .cert-header, .cert-row { display: grid; grid-template-columns: 80px 150px 1fr 150px; gap: 1.5rem; padding: 0.5rem 0; align-items: baseline; }
-    .cert-header { color: var(--fg-dim); font-weight: bold; }
-    .divider { color: var(--border); overflow: hidden; white-space: nowrap; margin-bottom: 0.5rem; }
+    .cert-table {
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+    .cert-header, .cert-row {
+        display: grid;
+        grid-template-columns: 80px 150px 1fr 150px;
+        gap: 1.5rem;
+        padding: 0.5rem 0;
+        align-items: baseline;
+    }
+    .cert-header { 
+        color: var(--fg-dim); 
+        font-weight: bold; 
+    }
+    .divider { 
+        color: var(--border); 
+        overflow: hidden; 
+        white-space: nowrap; 
+        margin-bottom: 0.5rem; 
+    }
     
-    .cert-name { display: block; font-weight: 700; color: var(--fg); }
-    .cert-note { display: block; font-size: 0.8rem; color: var(--fg-dim); margin-top: 0.2rem; }
-    .col-id { font-family: monospace; color: var(--fg-dim); text-align: right; }
+    .cert-name { 
+        display: block; 
+        font-weight: 700; 
+        color: var(--fg); 
+    }
+    .cert-note { 
+        display: block; 
+        font-size: 0.8rem; 
+        color: var(--fg-dim); 
+        margin-top: 0.2rem; 
+    }
+    .col-id { 
+        font-family: monospace; 
+        color: var(--fg-dim); 
+        text-align: right; 
+    }
     
-    .cert-footer { margin-top: 2rem; color: var(--fg-dim); }
+    .cert-footer { 
+        margin-top: 2rem; 
+        color: var(--fg-dim); 
+    }
 
     @media (max-width: 768px) {
         .cert-header { display: none; }
         .divider { display: none; }
-        .cert-row { display: flex; flex-direction: column; gap: 0.2rem; border-bottom: 1px dashed var(--border); padding: 1.5rem 0; }
+        .cert-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            border-bottom: 1px dashed var(--border);
+            padding: 1.5rem 0;
+        }
         .col-id { text-align: left; }
     }
 </style>
