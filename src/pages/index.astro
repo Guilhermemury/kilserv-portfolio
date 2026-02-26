@@ -1,27 +1,29 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-import SectionHeader from '../components/SectionHeader.astro'; // Import Added
+import SectionHeader from '../components/SectionHeader.astro'; 
 ---
 
 <MainLayout title="Home">
     <section class="hero">
-        <pre aria-label="KILSERV ASCII Art">
- _  __ ___  _       ____   _____  ____  __     __
-| |/ /|_ _|| |     / ___| | ____||  _ \ \ \   / /
-| ' /  | | | |     \___ \ |  _|  | |_) | \ \ / / 
-| . \  | | | |___   ___) || |___ |  _ &lt;   \ V /  
+        <pre aria-label="KILSERV ASCII Art" class="terminal-line delay-1">
+ _  __ ___  _        ____   _____  ____  __     __
+| |/ /|_ _|| |      / ___| | ____||  _ \ \ \   / /
+| ' /  | | | |      \___ \ |  _|  | |_) | \ \ / / 
+| . \  | | | |___    ___) || |___ |  _ <   \ V /  
 |_|\_\|___||_____| |____/ |_____||_| \_\   \_/   
         </pre>
         
-        <div class="intro-block">
+        <div class="intro-block terminal-line delay-2">
             <p>> <strong>Guilherme (Kilserv)</strong> is a Security Researcher & Red Team Operator.</p>
             <p>> Specializing in offensive engineering, manual code review, and high-impact vulnerability disclosure.</p>
         </div>
     </section>
 
-    <SectionHeader command="grep 'HIGH' advisories.log" path="~" />
+    <div class="terminal-line delay-3">
+        <SectionHeader command="grep 'HIGH' advisories.log" path="~" />
+    </div>
 
-    <section class="highlight-section">
+    <section class="highlight-section terminal-line delay-4">
         <div class="cve-card">
             <div class="cve-meta">
                 <span class="tag high">HIGH SEVERITY</span>
@@ -32,9 +34,11 @@ import SectionHeader from '../components/SectionHeader.astro'; // Import Added
         </div>
     </section>
 
-    <SectionHeader command="index --map" path="~" />
+    <div class="terminal-line delay-5">
+        <SectionHeader command="index --map" path="~" />
+    </div>
 
-    <section class="quick-links">
+    <section class="quick-links terminal-line delay-6">
         <ul>
             <li><a href="/about">[ ABOUT ]</a> :: Professional profile & methodology.</li>
             <li><a href="/research">[ RESEARCH ]</a> :: Technical write-ups and PoCs.</li>
