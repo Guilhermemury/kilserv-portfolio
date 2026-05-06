@@ -135,22 +135,19 @@ An authenticated attacker with the lowest possible API privilege level — read 
 ---
 
 ## Responsible Disclosure Timeline
-
+ 
 The disclosure process for this vulnerability stretched across nearly five months and required direct engagement with MITRE after the vendor went silent during the patch development window. The complete timeline is documented below.
-
-| Date       | Event                                                                                                     |
-|------------|-----------------------------------------------------------------------------------------------------------|
-| 2026-01-02 | Vulnerability identified and reported to the Dolibarr team via GitHub Security Advisory (GHSA-px39-mwcr-hvxp). |
-| 2026-01-07 | Vendor acknowledged and confirmed the vulnerability. Proposed fix: force `MAIN_DISALLOW_UNSECURED_SELECT_INTO_EXTRAFIELDS_FILTER = 1` in API context. |
-| 2026-01-13 | Follow-up requesting patch timeline and CVE assignment plan.                                              |
-| 2026-01-26 | Second follow-up. Informed vendor that CVE request would be filed with MITRE if no response by end of week. |
-| 2026-02-26 | 90-day disclosure deadline formally communicated. CVE request submitted to MITRE, given vendor silence on patch timeline. |
-| 2026-03-01 | Vendor confirmed fix would be included in v23, to be released soon.                                       |
-| 2026-03-25 | Patch released in Dolibarr v23.0.0. Advisory closed by vendor.                                           |
-| 2026-05-06 | MITRE assigned CVE-2026-36497. CVE record updated with public references. Technical write-up published.   |
-
+ 
+- **Jan 02, 2026** — Vulnerability identified and reported to the Dolibarr team via GitHub Security Advisory ([GHSA-px39-mwcr-hvxp](https://github.com/Dolibarr/dolibarr/security/advisories/GHSA-px39-mwcr-hvxp)).
+- **Jan 07, 2026** — Vendor acknowledged and confirmed the vulnerability. Proposed fix: force `MAIN_DISALLOW_UNSECURED_SELECT_INTO_EXTRAFIELDS_FILTER = 1` in API context.
+- **Jan 13, 2026** — Follow-up requesting patch timeline and CVE assignment plan.
+- **Jan 26, 2026** — Second follow-up. Informed vendor that CVE request would be filed with MITRE if no response by end of week.
+- **Feb 26, 2026** — 90-day disclosure deadline formally communicated. CVE request submitted to MITRE independently, given vendor silence on patch timeline.
+- **Mar 01, 2026** — Vendor confirmed fix would be included in v23, to be released soon.
+- **Mar 25, 2026** — Patch released in Dolibarr v23.0.0. Advisory closed by vendor.
+- **May 06, 2026** — MITRE assigned CVE-2026-36497. CVE record updated with public references. Technical write-up published.
 The decision to submit the CVE request to MITRE independently — rather than waiting for the vendor to act as CNA — was made after multiple follow-up attempts went unanswered. This is a standard step in responsible disclosure when a vendor's patch timeline becomes unclear and the 90-day window is approaching.
-
+ 
 ---
 
 ## Remediation
