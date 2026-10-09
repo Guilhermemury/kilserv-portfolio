@@ -1,0 +1,286 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+
+interface CVE {
+    id: string;
+    product: string;
+    type: string;
+    cwe: string;
+    cvss: number | string;
+    severity: "Critical" | "High" | "Medium" | "Low";
+    status: string;
+    date: string;
+    link?: string;
+}
+
+const cves: CVE[] = [
+    {
+        id: "CVE-2026-33288",
+        product: "SuiteCRM",
+        type: "SQL Injection",
+        cwe: "CWE-89",
+        cvss: "8.8",
+        severity: "High",
+        status: "Patched",
+        date: "2026-03-19",
+        link: "/research/breaking-suitecrm-authentication-layer-double-cve"
+    },
+    {
+        id: "CVE-2026-33289",
+        product: "SuiteCRM",
+        type: "LDAP Injection",
+        cwe: "CWE-90",
+        cvss: "8.8",
+        severity: "High",
+        status: "Patched",
+        date: "2026-03-19",
+        link: "/research/breaking-suitecrm-authentication-layer-double-cve"
+    },
+    {
+        id: "CVE-2025-67877",
+        product: "ChurchCRM",
+        type: "SQL Injection (SQLi)",
+        cwe: "CWE-89",
+        cvss: 7.4,
+        severity: "High",
+        status: "Patched",
+        date: "2025-01-15",
+        link: "/research/churchcrm-sqli-cve-2025-67877"
+    }
+];
+
+const certifications = [
+    {
+        name: "Certified Penetration Testing Professional (CPENT)",
+        org: "EC-Council",
+        id: "ECC5087349162",
+        year: "2026",
+    },
+    {
+        name: "DESEC Certified Penetration Tester (DCPT)",
+        org: "DESEC",
+        id: "VIXA-AIXVC-LBTK",
+        year: "2026",
+    },
+    {
+        name: "Certified AppSec Pentester (CAPen)",
+        org: "TheSecOpsGroup",
+        id: "10818602",
+        year: "2025",
+    },
+    {
+        name: "eLearnSecurity Junior Penetration Tester",
+        org: "INE Security",
+        id: "165909031",
+        year: "2025",
+    },
+    {
+        name: "Certified Red Team Analyst",
+        org: "Cyberwarfare",
+        id: "CRTA-68b632b83bd10918d103db19",
+        year: "2025",
+    }
+];
+
+const getSeverityClass = (severity: string) => {
+    switch(severity) {
+        case 'Critical': return 'cvss-critical';
+        case 'High': return 'cvss-high';
+        case 'Medium': return 'cvss-medium';
+        default: return 'cvss-low';
+    }
+};
+
+const stats = {
+    cves: cves.length,
+    products: [...new Set(cves.map(c => c.product))].length,
+    certs: certifications.length,
+};
+---
+
+<MainLayout title="Achievements" description="CVE disclosures, certifications, and security acknowledgements.">
+
+    <!-- Stats -->
+    <section class="stats-section terminal-line delay-1">
+        <div class="stat-row">
+            <span class="stat-value">{stats.cves}</span>
+            <span class="stat-label">CVEs Published</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-value">{stats.products}</span>
+            <span class="stat-label">Products Affected</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-value">{stats.certs}</span>
+            <span class="stat-label">Certifications</span>
+        </div>
+    </section>
+
+    <!-- CVEs -->
+    <div class="terminal-line delay-2">
+        <SectionHeader command="cat cve_database.json | jq" path="achievements" />
+    </div>
+
+    <div class="cve-table">
+        <div class="cve-header terminal-line delay-2">
+            <span>ID / NVD REF</span>
+            <span>VULNERABILITY / CWE</span>
+            <span>SEVERITY / CVSS</span>
+            <span>STATUS</span>
+        </div>
+
+        <div class="divider terminal-line delay-2">==============================================================================================================</div>
+
+        {cves.map((cve, index) => (
+            <div class="cve-row terminal-line" style={`animation-delay: ${0.3 + index * 0.12}s`}>
+                <div class="col-main">
+                    <div class="id-wrapper">
+                        <span class="cve-id">
+                            {cve.link ? <a href={cve.link} style="border:none;font-weight:700">{cve.id}</a> : cve.id}
+                        </span>
+                        <a href={`https://nvd.nist.gov/vuln/detail/${cve.id}`} target="_blank" rel="noopener noreferrer" class="nvd-link">[NVD]</a>
+                    </div>
+                    <span class="product">> {cve.product}</span>
+                </div>
+
+                <div class="col-type">
+                    <span class="vuln-type">{cve.type}</span>
+                    <span class="cwe-id">[{cve.cwe}]</span>
+                </div>
+
+                <div class="col-score">
+                    <div class={`badge ${getSeverityClass(cve.severity)}`}>
+                        {cve.severity.toUpperCase()}
+                    </div>
+                    <span class="cvss-score">CVSS: {cve.cvss}</span>
+                </div>
+
+                <div class="col-status">
+                    <span class="status-tag">[{cve.status}]</span>
+                    <span class="date">{cve.date}</span>
+                </div>
+            </div>
+        ))}
+
+        <div class="cve-footer terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.1}s`}>
+            <span>entries: {cves.length}</span>
+        </div>
+    </div>
+
+    <!-- Certifications -->
+    <div class="terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.3}s`}>
+        <SectionHeader command="ls -l certifications/" path="achievements" />
+    </div>
+
+    <div class="cert-table">
+        <div class="cert-header terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.4}s`}>
+            <span class="col-year">YEAR</span>
+            <span class="col-org">ORG</span>
+            <span class="col-name">CERTIFICATION</span>
+            <span class="col-id">VERIFICATION</span>
+        </div>
+
+        <div class="divider terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.4}s`}>──────────────────────────────────────────────────────────────────────────────────────────────────────────</div>
+
+        {certifications.map((cert, index) => (
+            <div class="cert-row terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.5 + index * 0.1}s`}>
+                <span class="col-year">[{cert.year}]</span>
+                <span class="col-org">{cert.org}</span>
+                <div class="col-name-group">
+                    <span class="cert-name">{cert.name}</span>
+                </div>
+                <span class="col-id">{cert.id}</span>
+            </div>
+        ))}
+
+        <div class="cert-footer terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.5 + certifications.length * 0.1}s`}>
+            <span>total {certifications.length}</span>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    /* Stats */
+    .stats-section {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    .stat-row {
+        border: 1px solid var(--border);
+        padding: 1.5rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.01);
+    }
+    .stat-value {
+        display: block;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--fg);
+        margin-bottom: 0.5rem;
+    }
+    .stat-label {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--fg-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* CVE Table */
+    .cve-table { font-size: 0.9rem; margin-top: 1rem; margin-bottom: 4rem; }
+    .cve-header, .cve-row { display: grid; grid-template-columns: 1.5fr 2fr 1fr 0.8fr; gap: 1rem; padding: 1rem 0; align-items: start; }
+    .cve-header { color: var(--fg-dim); font-weight: bold; font-size: 0.8rem; letter-spacing: 0.05em; }
+    .divider { color: var(--border); overflow: hidden; white-space: nowrap; margin-bottom: 0.5rem; }
+    .cve-row { border-bottom: 1px dashed var(--border); transition: background-color 0.1s; }
+    .cve-row:hover { background-color: rgba(255, 255, 255, 0.03); }
+
+    .col-main, .col-type, .col-score, .col-status { display: flex; flex-direction: column; gap: 0.3rem; }
+    .id-wrapper { display: flex; align-items: baseline; gap: 0.8rem; }
+    .cve-id { font-weight: 700; color: var(--fg); font-size: 1rem; }
+    .nvd-link {
+        font-size: 0.75rem; color: var(--fg-dim); text-decoration: none;
+        border-bottom: 1px dotted var(--fg-dim); transition: color 0.2s, border-color 0.2s;
+    }
+    .nvd-link:hover { color: var(--fg); border-color: var(--fg); }
+    .product { color: var(--fg-dim); font-size: 0.85rem; }
+    .vuln-type { color: var(--fg); }
+    .cwe-id { color: var(--fg-dim); font-size: 0.8rem; font-family: monospace; }
+    .cvss-score { font-size: 0.8rem; font-weight: bold; color: var(--fg-dim); }
+    .status-tag { color: var(--fg); font-family: monospace; }
+    .date { color: var(--fg-dim); font-size: 0.8rem; }
+    .cve-footer { margin-top: 1.5rem; color: var(--fg-dim); text-align: right; }
+
+    .badge { display: inline-block; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: bold; border: 1px solid; text-align: center; width: fit-content; }
+    .cvss-critical { color: #FF0055; border-color: #FF0055; }
+    .cvss-high { color: #FF5500; border-color: #FF5500; }
+    .cvss-medium { color: #FFCC00; border-color: #FFCC00; }
+    .cvss-low { color: #00FF55; border-color: #00FF55; }
+
+    /* Cert Table */
+    .cert-table { font-size: 0.9rem; margin-top: 1rem; }
+    .cert-header, .cert-row { display: grid; grid-template-columns: 80px 150px 1fr 150px; gap: 1.5rem; padding: 0.5rem 0; align-items: baseline; }
+    .cert-header { color: var(--fg-dim); font-weight: bold; }
+    .cert-name { display: block; font-weight: 700; color: var(--fg); }
+    .col-id { font-family: monospace; color: var(--fg-dim); text-align: right; }
+    .cert-footer { margin-top: 1.5rem; color: var(--fg-dim); }
+
+    /* Animation */
+    .terminal-line { opacity: 0; animation: renderLine 0.15s forwards; }
+    @keyframes renderLine {
+        from { opacity: 0; transform: translateY(2px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        .stats-section { grid-template-columns: 1fr; }
+        .cve-header { display: none; }
+        .cve-row { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem 0; }
+        .col-score { flex-direction: row; align-items: center; gap: 1rem; }
+        .cert-header { display: none; }
+        .cert-row { display: flex; flex-direction: column; gap: 0.2rem; border-bottom: 1px dashed var(--border); padding: 1.5rem 0; }
+        .col-id { text-align: left; }
+    }
+</style>

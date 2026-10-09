@@ -42,7 +42,8 @@ function getReadingTime(body: string | undefined): number {
         </div>
     </div>
 
-    <div class="rss-link terminal-line" style={`animation-delay: ${0.3 + (posts.length * 0.1) + 0.2}s`}>
+    <div class="bottom-links terminal-line" style={`animation-delay: ${0.3 + (posts.length * 0.1) + 0.2}s`}>
+        <a href="/tags">[Browse by Tag]</a>
         <a href="/rss.xml" target="_blank">[RSS Feed]</a>
     </div>
 </MainLayout>
@@ -74,16 +75,18 @@ function getReadingTime(body: string | undefined): number {
         margin-top: 1rem;
         color: var(--fg-dim);
     }
-    .rss-link {
+    .bottom-links {
         margin-top: 2rem;
-        text-align: right;
+        display: flex;
+        justify-content: flex-end;
+        gap: 1.5rem;
         font-size: 0.8rem;
     }
-    .rss-link a {
+    .bottom-links a {
         color: var(--fg-dim);
         border-bottom: 1px dotted var(--fg-dim);
     }
-    .rss-link a:hover {
+    .bottom-links a:hover {
         color: var(--fg);
     }
 
