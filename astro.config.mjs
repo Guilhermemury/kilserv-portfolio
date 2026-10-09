@@ -12,4 +12,9 @@ export default defineConfig({
   security: {
     checkOrigin: true
   },
+  markdown: {
+    shikiConfig: {
+      theme: 'github-dark',
+    },
+  },
 });

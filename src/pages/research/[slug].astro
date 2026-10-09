@@ -4,18 +4,55 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 
 export async function getStaticPaths() {
-    const posts = await getCollection('research');
-    return posts.map((entry) => ({
+    const posts = (await getCollection('research')).sort(
+        (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+    );
+    return posts.map((entry, index) => ({
         params: { slug: entry.slug },
-        props: { entry },
+        props: {
+            entry,
+            prev: index < posts.length - 1 ? posts[index + 1] : null,
+            next: index > 0 ? posts[index - 1] : null,
+        },
     }));
 }
 
-const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { entry, prev, next } = Astro.props;
+const { Content, headings } = await entry.render();
+
+const words = entry.body?.split(/\s+/).length ?? 0;
+const readingTime = Math.max(1, Math.ceil(words / 200));
+
+const tocHeadings = headings.filter(h => h.depth <= 3);
+
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": entry.data.title,
+    "description": entry.data.description,
+    "datePublished": entry.data.pubDate.toISOString(),
+    "author": {
+        "@type": "Person",
+        "name": "Guilherme Mury",
+        "alternateName": "Kilserv",
+        "url": "https://kilserv.vercel.app"
+    },
+    "publisher": {
+        "@type": "Person",
+        "name": "Guilherme Mury"
+    },
+    "url": `https://kilserv.vercel.app/research/${entry.slug}/`,
+    "keywords": entry.data.tags?.join(", "),
+    "wordCount": words,
+    "timeRequired": `PT${readingTime}M`
+};
 ---
 
 <MainLayout title={entry.data.title} description={entry.data.description}>
+    <Fragment slot="head">
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    </Fragment>
+
     <article>
         <div class="terminal-line delay-1">
             <SectionHeader command={`cat ${entry.slug}.md`} path="research" />
@@ -26,14 +63,49 @@ const { Content } = await entry.render();
             <div class="meta-row">
                 <span class="date">> Date: {entry.data.pubDate.toISOString().split('T')[0]}</span>
                 {entry.data.severity && <span class="sev">> Severity: {entry.data.severity}</span>}
+                <span class="reading-time">> Read: ~{readingTime} min</span>
             </div>
             <p class="abstract">{entry.data.description}</p>
         </header>
 
+        {tocHeadings.length > 2 && (
+            <nav class="toc terminal-line delay-3" aria-label="Table of Contents">
+                <details open>
+                    <summary class="toc-title">$ cat .toc</summary>
+                    <ul>
+                        {tocHeadings.map((h) => (
+                            <li class={`toc-depth-${h.depth}`}>
+                                <a href={`#${h.slug}`}>{h.text}</a>
+                            </li>
+                        ))}
+                    </ul>
+                </details>
+            </nav>
+        )}
+
         <div class="markdown-content terminal-line delay-3">
             <Content />
         </div>
-        
+
+        <nav class="article-nav terminal-line delay-4" aria-label="Article navigation">
+            <div class="nav-prev">
+                {prev && (
+                    <a href={`/research/${prev.slug}`}>
+                        <span class="nav-label">&lt; prev</span>
+                        <span class="nav-title">{prev.data.title}</span>
+                    </a>
+                )}
+            </div>
+            <div class="nav-next">
+                {next && (
+                    <a href={`/research/${next.slug}`}>
+                        <span class="nav-label">next &gt;</span>
+                        <span class="nav-title">{next.data.title}</span>
+                    </a>
+                )}
+            </div>
+        </nav>
+
         <div class="eof terminal-line delay-4">
             <span class="cursor">[EOF]</span> <a href="/research" class="back-link">cd ..</a>
         </div>
@@ -41,73 +113,202 @@ const { Content } = await entry.render();
 </MainLayout>
 
 <style>
-    .article-meta { 
-        margin-bottom: 3rem; 
-        border-bottom: 1px solid var(--border); 
-        padding-bottom: 2rem; 
+    .article-meta {
+        margin-bottom: 3rem;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 2rem;
     }
-    .article-meta h1 { 
-        margin-bottom: 1rem; 
-        color: var(--fg); 
+    .article-meta h1 {
+        margin-bottom: 1rem;
+        color: var(--fg);
     }
-    .meta-row { 
-        display: flex; 
-        gap: 2rem; 
-        color: var(--fg-dim); 
-        font-size: 0.9rem; 
-        margin-bottom: 1.5rem; 
+    .meta-row {
+        display: flex;
+        gap: 2rem;
+        color: var(--fg-dim);
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
     }
-    .abstract { 
-        font-style: italic; 
-        color: var(--fg-dim); 
-        border-left: 2px solid var(--fg); 
-        padding-left: 1rem; 
+    .abstract {
+        font-style: italic;
+        color: var(--fg-dim);
+        border-left: 2px solid var(--fg);
+        padding-left: 1rem;
     }
-    
+
+    /* Table of Contents */
+    .toc {
+        border: 1px dashed var(--border);
+        padding: 1.5rem;
+        margin-bottom: 3rem;
+        background: rgba(255, 255, 255, 0.01);
+    }
+    .toc-title {
+        color: var(--fg-dim);
+        font-size: 0.85rem;
+        cursor: pointer;
+        font-family: var(--font-mono);
+    }
+    .toc ul {
+        list-style: none;
+        margin: 1rem 0 0 0;
+        padding: 0;
+    }
+    .toc li {
+        margin-bottom: 0.4rem;
+        font-size: 0.85rem;
+    }
+    .toc li a {
+        color: var(--fg-dim);
+        border-bottom: none;
+        transition: color 0.2s;
+    }
+    .toc li a:hover {
+        color: var(--fg);
+        opacity: 1;
+    }
+    .toc li a::before {
+        content: "> ";
+        color: var(--border);
+    }
+    .toc-depth-3 {
+        padding-left: 1.5rem;
+    }
+
     /* Markdown Styles */
-    .markdown-content :global(h2) { 
-        margin-top: 2.5rem; 
-        border-bottom: 1px dashed var(--border); 
-        padding-bottom: 0.5rem; 
-        color: var(--fg); 
+    .markdown-content :global(h2) {
+        margin-top: 2.5rem;
+        border-bottom: 1px dashed var(--border);
+        padding-bottom: 0.5rem;
+        color: var(--fg);
     }
-    .markdown-content :global(p) { 
-        margin-bottom: 1.5rem; 
-        line-height: 1.7; 
-        max-width: 70ch; 
+    .markdown-content :global(h3) {
+        margin-top: 2rem;
+        color: var(--fg);
     }
-    .markdown-content :global(code) { 
-        background: #111; 
-        padding: 0.2rem 0.4rem; 
-        font-size: 0.9em; 
-        border: 1px solid #333; 
-        color: #ddd; 
+    .markdown-content :global(p) {
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
+        max-width: 70ch;
     }
-    .markdown-content :global(pre) { 
-        background: #0a0a0a; 
-        padding: 1.5rem; 
-        border: 1px solid #333; 
-        overflow-x: auto; 
-        margin: 2rem 0; 
+    .markdown-content :global(code) {
+        background: #111;
+        padding: 0.2rem 0.4rem;
+        font-size: 0.9em;
+        border: 1px solid #333;
+        color: #ddd;
     }
-    .markdown-content :global(ul) { 
-        list-style: square; 
-        margin-left: 1.5rem; 
-        margin-bottom: 1.5rem; 
+    .markdown-content :global(pre) {
+        border: 1px solid #333;
+        overflow-x: auto;
+        margin: 2rem 0;
+        border-radius: 0;
     }
-    .markdown-content :global(li) { 
-        margin-bottom: 0.5rem; 
+    .markdown-content :global(pre code) {
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-size: 0.85em;
+        color: inherit;
     }
-    
-    .eof { 
-        text-align: center; 
-        margin-top: 4rem; 
-        color: var(--fg-dim); 
-        font-size: 0.9rem; 
+    .markdown-content :global(ul) {
+        list-style: square;
+        margin-left: 1.5rem;
+        margin-bottom: 1.5rem;
     }
-    .back-link { 
-        margin-left: 1rem; 
-        color: var(--fg); 
-        font-weight: bold; 
+    .markdown-content :global(li) {
+        margin-bottom: 0.5rem;
+    }
+    .markdown-content :global(table) {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2rem 0;
+        font-size: 0.9rem;
+    }
+    .markdown-content :global(th),
+    .markdown-content :global(td) {
+        border: 1px solid var(--border);
+        padding: 0.6rem 1rem;
+        text-align: left;
+    }
+    .markdown-content :global(th) {
+        background: rgba(255, 255, 255, 0.03);
+        font-weight: 700;
+    }
+    .markdown-content :global(blockquote) {
+        border-left: 2px solid var(--fg-dim);
+        padding-left: 1rem;
+        color: var(--fg-dim);
+        margin: 1.5rem 0;
+    }
+    .markdown-content :global(strong) {
+        color: var(--fg);
+    }
+
+    /* Article Navigation */
+    .article-nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+    }
+    .nav-prev, .nav-next {
+        display: flex;
+    }
+    .nav-next {
+        justify-content: flex-end;
+        text-align: right;
+    }
+    .article-nav a {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        border: 1px dashed var(--border);
+        padding: 1rem;
+        border-bottom: 1px dashed var(--border);
+        transition: border-color 0.2s;
+        max-width: 100%;
+    }
+    .article-nav a:hover {
+        border-color: var(--fg);
+        opacity: 1;
+    }
+    .nav-label {
+        font-size: 0.75rem;
+        color: var(--fg-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .nav-title {
+        font-size: 0.85rem;
+        color: var(--fg);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .eof {
+        text-align: center;
+        margin-top: 4rem;
+        color: var(--fg-dim);
+        font-size: 0.9rem;
+    }
+    .back-link {
+        margin-left: 1rem;
+        color: var(--fg);
+        font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+        .article-nav {
+            grid-template-columns: 1fr;
+        }
+        .nav-next {
+            justify-content: flex-start;
+            text-align: left;
+        }
     }
 </style>

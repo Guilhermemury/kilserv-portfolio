@@ -1,0 +1,177 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+
+interface Recognition {
+    platform: string;
+    org: string;
+    type: string;
+    year: string;
+    link?: string;
+}
+
+const recognitions: Recognition[] = [
+    // Add your bug bounty recognitions here, e.g.:
+    // {
+    //     platform: "Intigriti",
+    //     org: "Target Corp",
+    //     type: "Critical Finding",
+    //     year: "2026",
+    //     link: "https://..."
+    // },
+];
+
+interface CVEEntry {
+    id: string;
+    product: string;
+    type: string;
+    year: string;
+    link?: string;
+}
+
+const cves: CVEEntry[] = [
+    {
+        id: "CVE-2026-33288",
+        product: "SuiteCRM",
+        type: "SQL Injection",
+        year: "2026",
+        link: "/research/breaking-suitecrm-authentication-layer-double-cve"
+    },
+    {
+        id: "CVE-2026-33289",
+        product: "SuiteCRM",
+        type: "LDAP Injection",
+        year: "2026",
+        link: "/research/breaking-suitecrm-authentication-layer-double-cve"
+    },
+    {
+        id: "CVE-2025-67877",
+        product: "ChurchCRM",
+        type: "SQL Injection",
+        year: "2025",
+        link: "/research/churchcrm-sqli-cve-2025-67877"
+    },
+];
+
+const stats = {
+    cves: cves.length,
+    products: [...new Set(cves.map(c => c.product))].length,
+    recognitions: recognitions.length,
+};
+---
+
+<MainLayout title="Hall of Fame" description="Bug bounty recognitions, CVE disclosures, and security acknowledgements.">
+    <div class="terminal-line delay-1">
+        <SectionHeader command="cat achievements.log" path="hall-of-fame" />
+    </div>
+
+    <section class="stats-section terminal-line delay-2">
+        <div class="stat-row">
+            <span class="stat-value">{stats.cves}</span>
+            <span class="stat-label">CVEs Published</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-value">{stats.products}</span>
+            <span class="stat-label">Products Affected</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-value">{stats.recognitions > 0 ? stats.recognitions : '—'}</span>
+            <span class="stat-label">Bug Bounty Recognitions</span>
+        </div>
+    </section>
+
+    <div class="terminal-line delay-3">
+        <SectionHeader command="grep 'CVE-' disclosures.log" path="hall-of-fame" />
+    </div>
+
+    <section class="cve-section">
+        {cves.map((cve, index) => (
+            <div class="cve-row terminal-line" style={`animation-delay: ${0.4 + (index * 0.1)}s`}>
+                <span class="cve-year">[{cve.year}]</span>
+                <span class="cve-id">
+                    {cve.link ? <a href={cve.link}>{cve.id}</a> : cve.id}
+                </span>
+                <span class="cve-product">{cve.product}</span>
+                <span class="cve-type">{cve.type}</span>
+            </div>
+        ))}
+    </section>
+
+    {recognitions.length > 0 && (
+        <>
+            <div class="terminal-line delay-3" style="margin-top: 3rem;">
+                <SectionHeader command="cat bounty_recognitions.log" path="hall-of-fame" />
+            </div>
+
+            <section class="recognition-section">
+                {recognitions.map((rec, index) => (
+                    <div class="rec-row terminal-line" style={`animation-delay: ${0.6 + (index * 0.1)}s`}>
+                        <span class="rec-year">[{rec.year}]</span>
+                        <span class="rec-platform">{rec.platform}</span>
+                        <span class="rec-org">{rec.org}</span>
+                        <span class="rec-type">{rec.type}</span>
+                    </div>
+                ))}
+            </section>
+        </>
+    )}
+</MainLayout>
+
+<style>
+    .stats-section {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin: 2rem 0 3rem 0;
+    }
+    .stat-row {
+        border: 1px solid var(--border);
+        padding: 1.5rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.01);
+    }
+    .stat-value {
+        display: block;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--fg);
+        margin-bottom: 0.5rem;
+    }
+    .stat-label {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--fg-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .cve-section, .recognition-section {
+        margin-top: 1rem;
+    }
+    .cve-row, .rec-row {
+        display: grid;
+        grid-template-columns: 70px 180px 1fr 150px;
+        gap: 1rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px dashed var(--border);
+        align-items: baseline;
+        font-size: 0.9rem;
+    }
+    .cve-year, .rec-year { color: var(--fg-dim); }
+    .cve-id { font-weight: 700; }
+    .cve-product, .rec-org { color: var(--fg-dim); }
+    .cve-type, .rec-type { color: var(--fg-dim); font-size: 0.85rem; }
+    .rec-platform { font-weight: 700; }
+
+    @media (max-width: 768px) {
+        .stats-section {
+            grid-template-columns: 1fr;
+        }
+        .cve-row, .rec-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            padding: 1rem 0;
+        }
+    }
+</style>

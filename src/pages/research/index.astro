@@ -6,13 +6,18 @@ import SectionHeader from '../../components/SectionHeader.astro';
 const posts = (await getCollection('research')).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+function getReadingTime(body: string | undefined): number {
+    const words = body?.split(/\s+/).length ?? 0;
+    return Math.max(1, Math.ceil(words / 200));
+}
 ---
 
 <MainLayout title="Research Archive">
     <div class="terminal-line delay-1">
         <SectionHeader command="ls -la research/" path="research" />
     </div>
-    
+
     <div class="terminal-list">
         <div class="header terminal-line delay-2">
             <span>PERMS</span>
@@ -20,59 +25,75 @@ const posts = (await getCollection('research')).sort(
             <span>DATE</span>
             <span>NAME</span>
         </div>
-        
+
         <div class="divider terminal-line delay-2">==============================================================================================================</div>
-        
+
         {posts.map((post, index) => (
             <div class="row terminal-line" style={`animation-delay: ${0.3 + (index * 0.1)}s`}>
                 <span class="perms">[-rw-r--r--]</span>
-                <span class="size">4.0K</span>
+                <span class="size">~{getReadingTime(post.body)}m</span>
                 <span class="date">{post.data.pubDate.toISOString().split('T')[0]}</span>
                 <a href={`/research/${post.slug}`}>{post.slug}.md</a>
             </div>
         ))}
-        
+
         <div class="row footer terminal-line" style={`animation-delay: ${0.3 + (posts.length * 0.1)}s`}>
             <span class="cursor">total {posts.length}</span>
         </div>
     </div>
+
+    <div class="rss-link terminal-line" style={`animation-delay: ${0.3 + (posts.length * 0.1) + 0.2}s`}>
+        <a href="/rss.xml" target="_blank">[RSS Feed]</a>
+    </div>
 </MainLayout>
 
 <style>
-    .terminal-list { 
-        font-family: var(--font-mono); 
-        margin-top: 2rem; 
-        font-size: 0.9rem; 
+    .terminal-list {
+        font-family: var(--font-mono);
+        margin-top: 2rem;
+        font-size: 0.9rem;
     }
-    .header, .row { 
-        display: grid; 
-        grid-template-columns: 120px 80px 120px 1fr; 
-        gap: 1rem; 
-        padding: 0.2rem 0; 
+    .header, .row {
+        display: grid;
+        grid-template-columns: 120px 60px 120px 1fr;
+        gap: 1rem;
+        padding: 0.2rem 0;
     }
-    .header { 
-        color: var(--fg-dim); 
-        font-weight: bold; 
+    .header {
+        color: var(--fg-dim);
+        font-weight: bold;
     }
-    .perms, .size, .date { 
-        color: var(--fg-dim); 
+    .perms, .size, .date {
+        color: var(--fg-dim);
     }
-    .divider { 
-        color: var(--border); 
-        margin-bottom: 0.5rem; 
+    .divider {
+        color: var(--border);
+        margin-bottom: 0.5rem;
     }
-    .footer { 
-        margin-top: 1rem; 
-        color: var(--fg-dim); 
+    .footer {
+        margin-top: 1rem;
+        color: var(--fg-dim);
     }
-    
+    .rss-link {
+        margin-top: 2rem;
+        text-align: right;
+        font-size: 0.8rem;
+    }
+    .rss-link a {
+        color: var(--fg-dim);
+        border-bottom: 1px dotted var(--fg-dim);
+    }
+    .rss-link a:hover {
+        color: var(--fg);
+    }
+
     @media (max-width: 600px) {
         .header, .perms, .size { display: none; }
-        .row { 
-            display: flex; 
-            flex-direction: column; 
-            border-bottom: 1px dashed var(--border); 
-            padding: 1rem 0; 
+        .row {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px dashed var(--border);
+            padding: 1rem 0;
         }
         .date { margin-bottom: 0.5rem; }
     }
