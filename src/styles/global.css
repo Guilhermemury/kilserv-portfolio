@@ -94,3 +94,23 @@ a:focus {
     background: var(--fg);
     color: var(--bg);
 }
+
+/* 5. Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--fg-dim);
+}
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) var(--bg);
+}

@@ -4,7 +4,7 @@ const currentPath = pathname.slice(1);
 ---
 
 <nav class="nav-container">
-    <div class="logo">[ <a href="/" style="border:none">Kilserv</a> ]</div>
+    <div class="logo">[ <a href="/" style="border:none" class="logo-text" data-text="Kilserv">Kilserv</a> ]</div>
 
     <ul class="desktop-menu">
         <li><a href="/" class={pathname === "/" ? "active" : ""}>home</a></li>
@@ -38,6 +38,52 @@ const currentPath = pathname.slice(1);
 
     .logo {
         font-weight: bold;
+    }
+    .logo-text {
+        position: relative;
+        display: inline-block;
+    }
+    .logo-text:hover {
+        animation: glitch 0.3s ease-in-out;
+    }
+    .logo-text:hover::before,
+    .logo-text:hover::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    .logo-text:hover::before {
+        color: #FF0055;
+        animation: glitch-shift 0.3s ease-in-out;
+        clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    }
+    .logo-text:hover::after {
+        color: #00FFAA;
+        animation: glitch-shift-rev 0.3s ease-in-out;
+        clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    }
+    @keyframes glitch {
+        0%, 100% { transform: translate(0); }
+        20% { transform: translate(-2px, 1px); }
+        40% { transform: translate(2px, -1px); }
+        60% { transform: translate(-1px, -1px); }
+        80% { transform: translate(1px, 1px); }
+    }
+    @keyframes glitch-shift {
+        0%, 100% { transform: translate(0); }
+        25% { transform: translate(2px, 0); }
+        50% { transform: translate(-2px, 0); }
+        75% { transform: translate(1px, 0); }
+    }
+    @keyframes glitch-shift-rev {
+        0%, 100% { transform: translate(0); }
+        25% { transform: translate(-2px, 0); }
+        50% { transform: translate(2px, 0); }
+        75% { transform: translate(-1px, 0); }
     }
 
     ul {

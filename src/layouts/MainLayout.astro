@@ -79,6 +79,52 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         
         <Footer />
     </div>
+
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">^</button>
+
+    <script>
+        function initEnhancements() {
+            // Copy button on code blocks
+            document.querySelectorAll('pre').forEach(pre => {
+                if (pre.querySelector('.copy-btn')) return;
+                if (pre.closest('.hero')) return;
+                const code = pre.querySelector('code') || pre;
+                if (!code.textContent || code.textContent.trim().length < 10) return;
+
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.textContent = 'copy';
+                btn.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(code.textContent || '');
+                        btn.textContent = 'done';
+                        setTimeout(() => btn.textContent = 'copy', 1500);
+                    } catch {
+                        btn.textContent = 'fail';
+                        setTimeout(() => btn.textContent = 'copy', 1500);
+                    }
+                });
+                pre.style.position = 'relative';
+                pre.appendChild(btn);
+            });
+
+            // Back to top
+            const topBtn = document.getElementById('back-to-top');
+            if (topBtn) {
+                const toggle = () => {
+                    topBtn.classList.toggle('visible', window.scrollY > 400);
+                };
+                window.addEventListener('scroll', toggle, { passive: true });
+                topBtn.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+                toggle();
+            }
+        }
+
+        initEnhancements();
+        document.addEventListener('astro:page-load', initEnhancements);
+    </script>
 </body>
 </html>
 
@@ -136,7 +182,61 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* --- 3. GLOBAL CURSOR & BLINK --- */
+    /* --- 3. COPY BUTTON ON CODE BLOCKS --- */
+    .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--fg-dim);
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s, color 0.2s, border-color 0.2s;
+        z-index: 2;
+    }
+    pre:hover .copy-btn {
+        opacity: 1;
+    }
+    .copy-btn:hover {
+        color: var(--fg);
+        border-color: var(--fg);
+    }
+
+    /* --- 4. BACK TO TOP --- */
+    .back-to-top {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 36px;
+        height: 36px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        color: var(--fg-dim);
+        font-family: var(--font-mono);
+        font-size: 1rem;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, color 0.2s, border-color 0.2s;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .back-to-top.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .back-to-top:hover {
+        color: var(--fg);
+        border-color: var(--fg);
+    }
+
+    /* --- 5. GLOBAL CURSOR & BLINK --- */
     .cursor::after {
         content: '█';
         margin-left: 5px;
