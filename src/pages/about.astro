@@ -3,11 +3,11 @@ import MainLayout from '../layouts/MainLayout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 ---
 
-<MainLayout title="About Profile">
+<MainLayout title="About Profile" description="Guilherme Mury (Kilserv) — Security Researcher & Red Team Operator based in Brazil.">
     <div class="terminal-line delay-1">
         <SectionHeader command="cat profile.txt" path="about" />
     </div>
-    
+
     <article class="terminal-block terminal-line delay-2">
         <p>
             Security Researcher and Ethical Hacker specializing in <strong>Web Application Security</strong> and <strong>Infrastructure Analysis</strong>.
@@ -16,11 +16,25 @@ import SectionHeader from '../components/SectionHeader.astro';
             My work focuses on identifying logic flaws that automated scanners miss. I approach every target with a hybrid methodology: mapping business logic first, then dissecting the technical implementation.
         </p>
         <p>
+            Multiple CVE disclosures across enterprise software. CPENT, DCPT, CAPen, and CRTA certified.
+        </p>
+        <p>
             Based in Brazil. Operating globally.
         </p>
     </article>
 
     <div class="terminal-line delay-3">
+        <SectionHeader command="cat socials.json | jq" path="about" />
+    </div>
+
+    <div class="socials terminal-line delay-3">
+        <a href="https://github.com/Guilhermemury" target="_blank" rel="noopener noreferrer">[ GitHub ]</a>
+        <a href="https://x.com/kilserv" target="_blank" rel="noopener noreferrer">[ X/Twitter ]</a>
+        <a href="https://www.linkedin.com/in/guilhermemury" target="_blank" rel="noopener noreferrer">[ LinkedIn ]</a>
+        <a href="/rss.xml" target="_blank">[ RSS ]</a>
+    </div>
+
+    <div class="terminal-line delay-4">
         <SectionHeader command="cat methodology.md" path="about" />
     </div>
 
@@ -48,16 +62,39 @@ import SectionHeader from '../components/SectionHeader.astro';
     </div>
 
     <ul class="skill-tree terminal-line delay-6">
-        <li><span class="category">LANGUAGES ::</span> Python, Go, TypeScript, PHP, Bash</li>
+        <li><span class="category">LANGUAGES ::</span> Python, Go, TypeScript, PHP, Bash, Java</li>
         <li><span class="category">TESTING   ::</span> Burp Suite Pro, Caido, Custom Scripts</li>
         <li><span class="category">TARGETS   ::</span> API (REST/GraphQL), Cloud (AWS), Legacy Ent. Apps</li>
+        <li><span class="category">CERTS     ::</span> CPENT, DCPT, CAPen, eJPT, CRTA</li>
     </ul>
 
 </MainLayout>
 
 <style>
     .terminal-block { max-width: 65ch; border-left: 2px solid var(--border); padding-left: 1.5rem; margin-bottom: 2rem; }
-    
+
+    .socials {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+    }
+    .socials a {
+        color: var(--fg);
+        font-weight: bold;
+        font-family: var(--font-mono);
+        border: 1px solid var(--border);
+        padding: 0.4rem 1rem;
+        border-bottom: 1px solid var(--border);
+        transition: all 0.2s;
+        font-size: 0.85rem;
+    }
+    .socials a:hover {
+        background: var(--fg);
+        color: var(--bg);
+        opacity: 1;
+    }
+
     .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
     .method-card h3 { font-size: 0.9rem; color: var(--fg-dim); margin-bottom: 0.5rem; }
 

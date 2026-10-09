@@ -66,6 +66,13 @@ const jsonLd = {
                 <span class="reading-time">> Read: ~{readingTime} min</span>
             </div>
             <p class="abstract">{entry.data.description}</p>
+            {entry.data.tags && entry.data.tags.length > 0 && (
+                <div class="tags-row">
+                    {entry.data.tags.map(tag => (
+                        <a href={`/tags#${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag">{tag}</a>
+                    ))}
+                </div>
+            )}
         </header>
 
         {tocHeadings.length > 2 && (
@@ -135,6 +142,24 @@ const jsonLd = {
         color: var(--fg-dim);
         border-left: 2px solid var(--fg);
         padding-left: 1rem;
+    }
+    .tags-row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+    .tag {
+        font-size: 0.75rem;
+        color: var(--fg-dim);
+        border: 1px solid var(--border);
+        padding: 0.15rem 0.5rem;
+        transition: all 0.2s;
+    }
+    .tag:hover {
+        color: var(--fg);
+        border-color: var(--fg);
+        opacity: 1;
     }
 
     /* Table of Contents */

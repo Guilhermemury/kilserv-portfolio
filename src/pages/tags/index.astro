@@ -1,0 +1,112 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+
+const posts = await getCollection('research');
+
+const tagMap = new Map<string, typeof posts>();
+posts.forEach(post => {
+    (post.data.tags ?? []).forEach(tag => {
+        const list = tagMap.get(tag) ?? [];
+        list.push(post);
+        tagMap.set(tag, list);
+    });
+});
+
+const sortedTags = [...tagMap.entries()].sort((a, b) => b[1].length - a[1].length);
+---
+
+<MainLayout title="Tags" description="Browse research articles by topic and vulnerability class.">
+    <div class="terminal-line delay-1">
+        <SectionHeader command="find research/ -name '*.md' | xargs grep -h 'tags:' | sort | uniq -c | sort -rn" path="tags" />
+    </div>
+
+    <section class="tag-cloud terminal-line delay-2">
+        {sortedTags.map(([tag, tagPosts]) => (
+            <a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag-chip">
+                {tag} <span class="tag-count">({tagPosts.length})</span>
+            </a>
+        ))}
+    </section>
+
+    <div class="divider terminal-line delay-3">──────────────────────────────────────────</div>
+
+    {sortedTags.map(([tag, tagPosts], i) => (
+        <section class="tag-section terminal-line" style={`animation-delay: ${0.4 + (i * 0.1)}s`} id={tag.toLowerCase().replace(/\s+/g, '-')}>
+            <h2 class="tag-heading"># {tag}</h2>
+            <ul>
+                {tagPosts
+                    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+                    .map(post => (
+                        <li>
+                            <span class="post-date">{post.data.pubDate.toISOString().split('T')[0]}</span>
+                            <a href={`/research/${post.slug}`}>{post.data.title}</a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </section>
+    ))}
+</MainLayout>
+
+<style>
+    .tag-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin: 2rem 0;
+    }
+    .tag-chip {
+        border: 1px solid var(--border);
+        padding: 0.3rem 0.8rem;
+        font-size: 0.85rem;
+        color: var(--fg);
+        border-bottom: 1px solid var(--border);
+        transition: all 0.2s;
+    }
+    .tag-chip:hover {
+        background: var(--fg);
+        color: var(--bg);
+        opacity: 1;
+    }
+    .tag-count {
+        color: var(--fg-dim);
+        font-size: 0.75rem;
+    }
+    .divider {
+        color: var(--border);
+        margin: 1rem 0 2rem 0;
+    }
+    .tag-section {
+        margin-bottom: 2.5rem;
+    }
+    .tag-heading {
+        font-size: 1rem;
+        color: var(--fg-dim);
+        margin-bottom: 0.8rem;
+        text-transform: none;
+        letter-spacing: 0;
+    }
+    .tag-section ul {
+        list-style: none;
+    }
+    .tag-section li {
+        display: flex;
+        gap: 1.5rem;
+        padding: 0.3rem 0;
+        font-size: 0.9rem;
+    }
+    .post-date {
+        color: var(--fg-dim);
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 600px) {
+        .tag-section li {
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+    }
+</style>
