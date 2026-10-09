@@ -1,9 +1,6 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
-
-// Get email from environment variable
-const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL;
 ---
 
 <MainLayout title="Contact">
@@ -35,18 +32,7 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL;
         <div id="form-status" class="status-output"></div>
     </form>
 
-    <br /><br />
 
-    <div class="terminal-line delay-5">
-        <SectionHeader command="cat public_key.asc" path="contact" />
-    </div>
-    
-    <pre class="pgp-block terminal-line delay-6">
------BEGIN PGP PUBLIC KEY BLOCK-----
-mQINBF... (PLACEHOLDER) ...
-=KilS
------END PGP PUBLIC KEY BLOCK-----
-    </pre>
 </MainLayout>
 
 <script>

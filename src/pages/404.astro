@@ -1,0 +1,57 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="404" description="Page not found.">
+    <div class="not-found">
+        <pre class="terminal-line delay-1" aria-label="404 Not Found">
+  _  _    ___  _  _
+ | || |  / _ \| || |
+ | || |_| | | | || |_
+ |__   _| | | |__   _|
+    | | | |_| |  | |
+    |_|  \___/   |_|
+        </pre>
+
+        <p class="terminal-line delay-2">> <strong>ERROR:</strong> Resource not found in filesystem.</p>
+        <p class="terminal-line delay-3">> Target path does not resolve to a valid endpoint.</p>
+
+        <div class="terminal-line delay-4">
+            <a href="/" class="back-link">[ cd ~ ]</a>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .not-found {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        text-align: center;
+        gap: 1rem;
+    }
+    .not-found pre {
+        font-size: 1.2rem;
+        color: var(--fg);
+        margin-bottom: 2rem;
+    }
+    .not-found p {
+        color: var(--fg-dim);
+        font-size: 0.95rem;
+    }
+    .back-link {
+        display: inline-block;
+        margin-top: 2rem;
+        font-weight: bold;
+        font-family: var(--font-mono);
+        border: 1px solid var(--fg);
+        padding: 0.5rem 1.5rem;
+        transition: all 0.2s;
+    }
+    .back-link:hover {
+        background: var(--fg);
+        color: var(--bg);
+    }
+</style>
