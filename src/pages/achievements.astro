@@ -58,6 +58,12 @@ const certifications = [
         year: "2026",
     },
     {
+        name: "Web Application Penetration Tester eXtreme (eWPTX)",
+        org: "INE Security",
+        id: "—",
+        year: "2026",
+    },
+    {
         name: "DESEC Certified Penetration Tester (DCPT)",
         org: "DESEC",
         id: "VIXA-AIXVC-LBTK",
@@ -70,13 +76,13 @@ const certifications = [
         year: "2025",
     },
     {
-        name: "eLearnSecurity Junior Penetration Tester",
+        name: "eLearnSecurity Junior Penetration Tester (eJPT)",
         org: "INE Security",
         id: "165909031",
         year: "2025",
     },
     {
-        name: "Certified Red Team Analyst",
+        name: "Certified Red Team Analyst (CRTA)",
         org: "Cyberwarfare",
         id: "CRTA-68b632b83bd10918d103db19",
         year: "2025",
@@ -92,10 +98,18 @@ const getSeverityClass = (severity: string) => {
     }
 };
 
+const bountyStats = {
+    totalEarned: "$1,600+",
+    reportsAccepted: 6,
+    platforms: ["HackerOne", "Intigriti", "YesWeHack"],
+    classes: ["RCE", "SQLi", "SSTI", "Auth Bypass", "IDOR", "Info Disclosure"],
+};
+
 const stats = {
     cves: cves.length,
     products: [...new Set(cves.map(c => c.product))].length,
     certs: certifications.length,
+    bounties: bountyStats.totalEarned,
 };
 ---
 
@@ -108,8 +122,8 @@ const stats = {
             <span class="stat-label">CVEs Published</span>
         </div>
         <div class="stat-row">
-            <span class="stat-value">{stats.products}</span>
-            <span class="stat-label">Products Affected</span>
+            <span class="stat-value">{stats.bounties}</span>
+            <span class="stat-label">Bug Bounty Earned</span>
         </div>
         <div class="stat-row">
             <span class="stat-value">{stats.certs}</span>
@@ -168,8 +182,35 @@ const stats = {
         </div>
     </div>
 
+    <!-- Bug Bounty -->
+    <div class="terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.2}s`}>
+        <SectionHeader command="cat bounty_activity.log" path="achievements" />
+    </div>
+
+    <div class="bounty-section terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.3}s`}>
+        <div class="bounty-grid">
+            <div class="bounty-card">
+                <span class="bounty-label">PLATFORMS</span>
+                <div class="bounty-tags">
+                    {bountyStats.platforms.map(p => <span class="platform-tag">{p}</span>)}
+                </div>
+            </div>
+            <div class="bounty-card">
+                <span class="bounty-label">ACCEPTED REPORTS</span>
+                <span class="bounty-value">{bountyStats.reportsAccepted}</span>
+            </div>
+            <div class="bounty-card">
+                <span class="bounty-label">VULN CLASSES</span>
+                <div class="bounty-tags">
+                    {bountyStats.classes.map(c => <span class="class-tag">{c}</span>)}
+                </div>
+            </div>
+        </div>
+        <p class="bounty-note">// Details under NDA. Vulnerability classes and impact verified by program triagers.</p>
+    </div>
+
     <!-- Certifications -->
-    <div class="terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.3}s`}>
+    <div class="terminal-line" style={`animation-delay: ${0.3 + cves.length * 0.12 + 0.5}s`}>
         <SectionHeader command="ls -l certifications/" path="achievements" />
     </div>
 
@@ -258,6 +299,52 @@ const stats = {
     .cvss-high { color: #FF5500; border-color: #FF5500; }
     .cvss-medium { color: #FFCC00; border-color: #FFCC00; }
     .cvss-low { color: #00FF55; border-color: #00FF55; }
+
+    /* Bug Bounty */
+    .bounty-section { margin-bottom: 4rem; }
+    .bounty-grid {
+        display: grid;
+        grid-template-columns: 1fr 0.6fr 1.4fr;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+    .bounty-card {
+        border: 1px solid var(--border);
+        padding: 1.2rem;
+        background: rgba(255, 255, 255, 0.01);
+    }
+    .bounty-label {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--fg-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.8rem;
+    }
+    .bounty-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--fg);
+    }
+    .bounty-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .platform-tag, .class-tag {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+        border: 1px solid var(--border);
+        color: var(--fg);
+        font-family: monospace;
+    }
+    .class-tag { color: var(--fg-dim); }
+    .bounty-note {
+        margin-top: 1rem;
+        font-size: 0.8rem;
+        color: var(--fg-dim);
+        font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+        .bounty-grid { grid-template-columns: 1fr; }
+    }
 
     /* Cert Table */
     .cert-table { font-size: 0.9rem; margin-top: 1rem; }
